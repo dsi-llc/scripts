@@ -30,8 +30,8 @@ columnNumber=30
 #row and column numbers refer to i and j mapping of your project.
 
 newdf=pd.Series(data=ds.WSEL[:,rowNumber,columnNumber],index=ds['time'].values)
-#extracting the WSEL data at specifc row and column, extracting the time stamps
-#and making a pandas dataSeries.
+#extracting the WSEL data at specifc row and column for all the timesteps,
+#extracting the time stamps and making a pandas dataSeries.
 #You may have other constituents that you may want to extract. 
 
 
