@@ -17,7 +17,7 @@ import xarray as xr
 filepath='test.nc'
 #location of NetCDF file with the output data.
 #In some cases, you may have multiple files where each file is for an 
-#individual days.
+#individual day. You may have to read all those files through a loop.
 #In the EEMS interface, click on Tools--> Export to NetCDF files and 
 #select proper option to export the data. 
 
@@ -30,8 +30,12 @@ columnNumber=30
 #row and column numbers refer to i and j mapping of your project.
 
 newdf=pd.Series(data=ds.WSEL[:,rowNumber,columnNumber],index=ds['time'].values)
-#extracting the data at specifc row and column, extracting the time stamps
+#extracting the WSEL data at specifc row and column, extracting the time stamps
 #and making a pandas dataSeries.
+#You may have other constituents that you may want to extract. 
+
 
 newdf.plot()
 #plotting the dataSeries 
+
+#
