@@ -1,18 +1,21 @@
 # -*- coding: utf-8 -*-
 """
 Created on Mon May 11 15:45:23 2020
+@author: Anurag Mishra
 
-@author: Anurag
+Test Script to read NetCDF data output by EEMS10.2 and extracting a timeseries of interest.
 
-Test Script to read NetCDF data and extracting a timeseries of interest.
+To download latest version of EEMS, please visit https://www.eemodelingsystem.com/user-center/downloads 
+To view latest videos posted on EEMS channel, visit https://www.youtube.com/channel/UCAbxUm-Dm5BAVG3qxtnmlDA 
+EEMS User guide is available at https://eemodelingsystem.atlassian.net/wiki/spaces/EK/overview
 
-You will need to install NetCDF4, xarray and pandas libraries.
 """
 
 
 import pandas as pd
 import xarray as xr
 #importing essential libraries
+#You will need to install NetCDF4, xarray and pandas libraries.
 
 filepath='test.nc'
 #location of NetCDF file with the output data.
