@@ -1,0 +1,8 @@
+C  SHOW.INP - OUTPUT INFO - Version: 10.2
+C  Project: EFDC+ Demonstration
+C 
+C   NSTYPE    NSHOWR    ISHOWC    JSHOWC
+C  
+C   ZSSMIN    ZSSMAX   SSALMAX
+         3      4000        15        15       200
+  -500.000  1000.000  1000.000
