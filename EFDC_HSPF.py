@@ -6,6 +6,10 @@ Created on Thu July 09 11:54:56 2020
 @author: Anurag
 This program runs a UCI file, extracts the relevant data, prepares an input 
 file for the EFDC+ model, and runs the EFDC+ model.
+
+The program expects HSPF installed in defaule location and EFDC+ installed. User must check these.
+
+This is a template file. The model outputs from HSPF to EFDC+ will need modifications. 
 """
 import subprocess
 import os
