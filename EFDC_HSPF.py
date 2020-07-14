@@ -13,6 +13,7 @@ This is a template file. The model outputs from HSPF to EFDC+ will need modifica
 """
 import subprocess
 import os
+import sys
 from wdmtoolbox import wdmtoolbox as wdm
 from datetime import datetime as dt
 import csv
@@ -68,10 +69,11 @@ try:
     if 'End of Job' in echoFileLines[len(echoFileLines)-1]:
         print('Real Time HSPF model ran successfully!')
     else:
-        print('Real Time HSPF model did not run successfully')    
+        print('Real Time HSPF model did not run successfully')
+        sys.exit()    
 except:
     print('Could not open echo file. Check if any of the files are locked.')
-
+    sys.exit()
 
 DSNList=[100]
 #A list of DSN that are in the HSPF Model Output WDM file with the data that is needed for the EFDC+ model
@@ -124,9 +126,13 @@ OverAllDF.to_csv(pNewFlowInpFile, mode='a', header=False, sep='\t',
 #outputting the data in the dataframe to the qser.inp file
 
 print('EFDC+ model files created.')
-run_command(os.path.join(pEFDCModelPath,'0run_efdc.bat'))
+rc = run_command(os.path.join(pEFDCModelPath,'0run_efdc.bat'))
 #Calling the function to run the EFDC model
-print('EFDC+ model run complete')
+if rc==0:
+    print('EFDC+ model run complete')
+else:
+    print('EFDC+ model did not run properly.')
+    sys.exit()
 
 OutputNCfile=os.path.join(pEFDCModelPath,"#Output",'DSI_EFDC+.nc')
 #Location of the NetCDF file
