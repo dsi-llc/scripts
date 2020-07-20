@@ -7,9 +7,11 @@ Created on Thu July 09 11:54:56 2020
 This program runs a UCI file, extracts the relevant data, prepares an input 
 file for the EFDC+ model, and runs the EFDC+ model.
 
-The program expects HSPF installed in defaule location and EFDC+ installed. User must check these.
+The program expects HSPF installed in defaule location and EFDC+ installed. User must update all the hardcoded locations.
 
 This is a template file. The model outputs from HSPF to EFDC+ will need modifications. 
+
+All the relevant project files are available in the accompanying folder.
 """
 import subprocess
 import os
@@ -21,6 +23,7 @@ import numpy as np
 import pandas as pd
 import shutil
 import xarray as xr
+import matplotlib.pyplot as plt
 #importing essential libraries
 
 def run_command(command):
@@ -148,10 +151,25 @@ df=pd.Series(data=ds.WSEL[:,rowNumber,columnNumber],index=ds['time'].values)
 #extracting the time stamps and making a pandas dataSeries.
 #You may have other constituents that you may want to extract. 
 
-
-df.plot()
-#plotting the dataSeries 
 ds.close()
 #closing the NetCDF connection
+
+#Following block makes the graph of WSEL extracted above.
+params = {
+        'legend.fontsize': 20,
+        'figure.figsize': (16, 4),
+        'axes.labelsize': 24,
+        'axes.titlesize':'x-large',
+        'xtick.labelsize':16,
+        'ytick.labelsize':16
+         }
+plt.rcParams.update(params)
+
+df.plot(ylim=[11.3,11.7])
+plt.xlabel("Date")
+plt.xticks(rotation=45)
+plt.ylabel("WSEL (m)")
+
+#plotting the dataSeries 
 
 
