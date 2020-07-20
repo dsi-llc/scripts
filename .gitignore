@@ -1,0 +1,7 @@
+
+#output*
+*.ech
+*.log
+*Thumbs.db
+ERROR.FIL
+EFDC_HSPF_Files/DM-14_Lake_T_HYD-WQ_Model/Models/Hyd/EFDC_LOG.HTML
