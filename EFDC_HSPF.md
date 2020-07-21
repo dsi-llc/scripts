@@ -1,6 +1,6 @@
 # Introduction
 
-Developing a hydrodynamic or water quality model often requires boundary conditions from other sources, such as meteorological, inflow, outflow, and water quality time series.
+Developing a hydrodynamic or a water quality model often requires boundary conditions from other sources, such as meteorological, inflow, outflow, and water quality time series.
 
 These time series may be observed data or model simulation results from other models. A typical application, for instance, might be the simulation of a watershed model and then using the output timeseries from the watershed model as a boundary condition for the downstream EFDC+ model.
 
