@@ -253,9 +253,9 @@ class RunHandler:
             coresPerDomain = self.MAXcoresPerRun // domainCount
             corehexList = hexpinlist(domainCount, int(coresPerDomain), offset)
             try:
-                mpi_command = f'"{self.mpi}" -n {domainCount} -genv I_MPI_PIN_DOMAIN="[{corehexList}]" -genv OMP_NUM_THREADS={self.MAXcoresPerRun}'
+                mpi_command = f'"{self.mpi}" -n {domainCount} -genv I_MPI_PIN_DOMAIN="[{corehexList}]" -genv OMP_NUM_THREADS={coresPerDomain}'
                 commands = [ f"TITLE={item['model_path']}\n", f"CD /d \"{item['model_path']}\"\n",
-                            f"{mpi_command} \"{efdc}\" -NT{self.MAXcoresPerRun}\n"]
+                            f"{mpi_command} \"{efdc}\" -NT{coresPerDomain}\n"]
             except Exception as err:
                 print(f"Failed to run EFDC. Error code: {err} for model {item['model_path']}")
         else:
