@@ -31,7 +31,7 @@ def getDecomp(modelfolder):
     else:
         run_type = 'OMP'
     return {'run_type':run_type, 'subdomains':domainCount, 
-            'model_path': modelfolder}
+            'model_path': modelfolder, 'offset':None}
     
 def hexpinlist(domainCount, coresPerDomain, offset):
     """
@@ -62,6 +62,11 @@ def hexpinlist(domainCount, coresPerDomain, offset):
     pinlist = ', '.join(pinlist)
     
     return pinlist
+
+def autoOffset(index, MAXcoresPerRun):
+    offset = index * MAXcoresPerRun
+
+    return offset
 
 class RunHandler:
     
@@ -162,10 +167,12 @@ class RunHandler:
         index = process._identity[0] - 1
         # Get start/end time to compute time used for each task
         start = time.time()
-        # Separate OMP runs and MPI runs
-        # if item type is dictionary, OMP run
-        # if item type is tuple, MPI run
-        result = self.startSubprocess(self.infoDict[item], index * self.MAXcoresPerRun)
+        if isinstance(self.infoDict[item]['offset'], None):
+            offset = autoOffset(index, self.MAXcoresPerRun)
+            result = self.startSubprocess(self.infoDict[item], offset)
+        elif isinstance(self.infoDict[item]['offset'], int):
+            offset = self.infoDict[item]['offset']
+            result = self.startSubprocess(self.infoDict[item], offset)
         end = time.time()
         # if run success (result == 0) record time used to "runtime" key in dictionary
         # else record error code and time used
@@ -251,12 +258,33 @@ class RunHandler:
         f.close()
         return batpath
     
+    def setoffset(self, offsetlist):
+        offsetlist = [int(x) for x in offsetlist.split()]
+        for idx, v in enumerate(self.infoDict.values()):
+            temp_dict = v
+            temp_dict['offset'] = offsetlist[idx]
+            v.update(temp_dict)
+            
+
+    
 if __name__ == '__main__':
     modelFolder = input("Full path of the models folder: \n")
-    print("\n")
+    
     efdc = input("Full path of the EFDC+ executable: \n")
-    print("\n")
+    
     MAXcoresPerRun = input("Maximum cores for each run: \n")
     runBatch = RunHandler(modelFolder, MAXcoresPerRun, efdc)
-    runBatch.run()
+    customOffsetFlag = input("Custom offset? (0/1): ")
+    if customOffsetFlag == 0:
+        print("Auto offset\n")
+        time.sleep(5)
+        #runBatch.run()
+    else:
+        customOffsetList = input("Custom offset numbers for all runs: \n")
+        runBatch.setoffset(customOffsetList)
+        print("Custom offset\n")
+        for k, v in runBatch.infoDict:
+            print(f"{k} offset: {v['offset']}\n")
+        time.sleep(5)
+        #runBatch.run()
         
