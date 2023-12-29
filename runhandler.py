@@ -102,9 +102,9 @@ class RunHandler:
         OMPmodelsList = [k for k, v in self.infoDict.items() if v['run_type'] == 'OMP']
         MPImodelsList = [k for k, v in self.infoDict.items() if v['run_type'] == 'MPI']
         
-        if len(OMPmodelsList) > 1:
+        if len(OMPmodelsList) >= 1:
             self.infoDict = self.runModels(OMPmodelsList)
-        if len(MPImodelsList) > 1:
+        if len(MPImodelsList) >= 1:
             self.infoDict = self.runModels(MPImodelsList)
         
         output_file = os.path.join(self.folderpath, 'run_log.json')
@@ -167,12 +167,20 @@ class RunHandler:
         index = process._identity[0] - 1
         # Get start/end time to compute time used for each task
         start = time.time()
-        if isinstance(self.infoDict[item]['offset'], None):
+        try:
+            value = self.infoDict[item]['offset']
+            if isinstance(value, int):
+                offset = self.infoDict[item]['offset']
+                result = self.startSubprocess(self.infoDict[item], offset)
+        except KeyError:
             offset = autoOffset(index, self.MAXcoresPerRun)
             result = self.startSubprocess(self.infoDict[item], offset)
-        elif isinstance(self.infoDict[item]['offset'], int):
-            offset = self.infoDict[item]['offset']
-            result = self.startSubprocess(self.infoDict[item], offset)
+        #if isinstance(self.infoDict[item]['offset'], None):
+        #    offset = autoOffset(index, self.MAXcoresPerRun)
+        #    result = self.startSubprocess(self.infoDict[item], offset)
+        #elif isinstance(self.infoDict[item]['offset'], int):
+        #    offset = self.infoDict[item]['offset']
+        #    result = self.startSubprocess(self.infoDict[item], offset)
         end = time.time()
         # if run success (result == 0) record time used to "runtime" key in dictionary
         # else record error code and time used
@@ -278,13 +286,13 @@ if __name__ == '__main__':
     if customOffsetFlag == 0:
         print("Auto offset\n")
         time.sleep(5)
-        #runBatch.run()
+        runBatch.run()
     else:
         customOffsetList = input("Custom offset numbers for all runs: \n")
         runBatch.setoffset(customOffsetList)
-        print("Custom offset\n")
-        for k, v in runBatch.infoDict:
+        #print("Custom offset\n")
+        for k, v in runBatch.infoDict.items():
             print(f"{k} offset: {v['offset']}\n")
         time.sleep(5)
-        #runBatch.run()
+        runBatch.run()
         
