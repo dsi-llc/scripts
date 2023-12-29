@@ -102,9 +102,9 @@ class RunHandler:
         OMPmodelsList = [k for k, v in self.infoDict.items() if v['run_type'] == 'OMP']
         MPImodelsList = [k for k, v in self.infoDict.items() if v['run_type'] == 'MPI']
         
-        if len(OMPmodelsList) >= 1:
+        if len(OMPmodelsList) > 0:
             self.infoDict = self.runModels(OMPmodelsList)
-        if len(MPImodelsList) >= 1:
+        if len(MPImodelsList) > 0:
             self.infoDict = self.runModels(MPImodelsList)
         
         output_file = os.path.join(self.folderpath, 'run_log.json')
