@@ -77,11 +77,11 @@ def checkCustomOffset(dictionary):
 
 class RunHandler:
     
-    def __init__(self, folderpath, MAXcoresPerRun, efdc):
+    def __init__(self, folderpath, MAXcoresPerRun, efdc, mpiexec):
         self.folderpath = folderpath
         self.MAXcoresPerRun = int(MAXcoresPerRun)
         self.efdc = efdc
-        self.mpi = "C:\Program Files\DSI\EEMS12\mpiexec.exe"
+        self.mpi = mpiexec
         self.infoDict = self.getModels()
         
         
@@ -307,9 +307,11 @@ if __name__ == '__main__':
     modelFolder = input("Full path of the models folder: \n")
     
     efdc = input("Full path of the EFDC+ executable: \n")
+
+    mpiexec = input("Full path of the mpiexec.exe: \n")
     
     MAXcoresPerRun = input("Maximum cores for each run: \n")
-    runBatch = RunHandler(modelFolder, MAXcoresPerRun, efdc)
+    runBatch = RunHandler(modelFolder, MAXcoresPerRun, efdc, mpiexec)
     customOffsetFlag = input("Custom offset? (0/1): ")
     if int(customOffsetFlag) == 0:
         print("Auto offset\n")
