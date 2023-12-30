@@ -68,12 +68,20 @@ def autoOffset(index, MAXcoresPerRun):
 
     return offset
 
+def checkCustomOffset(dictionary):
+    if dictionary['offset'] is None:
+        return 0
+    else:
+        return 1
+
+
 class RunHandler:
     
     def __init__(self, folderpath, MAXcoresPerRun, efdc):
         self.folderpath = folderpath
         self.MAXcoresPerRun = int(MAXcoresPerRun)
         self.efdc = efdc
+        self.mpi = "C:\Program Files\DSI\EEMS12\mpiexec.exe"
         self.infoDict = self.getModels()
         
         
@@ -105,6 +113,7 @@ class RunHandler:
         if len(OMPmodelsList) > 0:
             self.infoDict = self.runModels(OMPmodelsList)
         if len(MPImodelsList) > 0:
+            print(f'Running MPI...')
             self.infoDict = self.runModels(MPImodelsList)
         
         output_file = os.path.join(self.folderpath, 'run_log.json')
@@ -146,7 +155,9 @@ class RunHandler:
         # Assign workers based on max available runs at once to prevent overlapping
         p = Pool(maxRuns)
         # Apply "runModels" function to all item in runList, run all tasks at once
+        print(f'Start runModels')
         results = p.map(self.runModel, runList)
+        print(f'Finish runModels.')
         
         return self.updateResults(results)
         
@@ -165,22 +176,39 @@ class RunHandler:
         # Get current process and the process id to have control to each task
         process = current_process()
         index = process._identity[0] - 1
+        print(f'Inside runModel, Running Model {index+1}')
+        #result = None
         # Get start/end time to compute time used for each task
         start = time.time()
-        try:
-            value = self.infoDict[item]['offset']
-            if isinstance(value, int):
-                offset = self.infoDict[item]['offset']
+
+        print(f'infoDict[item] keys: {self.infoDict[item].keys()}')
+        customoffsetflag = checkCustomOffset(self.infoDict[item])
+        print(f"Check run_type: {self.infoDict[item]['run_type'] }")
+        print(f'Check customoffsetflag (0/1): {customoffsetflag}')
+
+        # run is OMP
+        if self.infoDict[item]['run_type'] == 'OMP':
+            # auto offset
+            if customoffsetflag == 0:
+                offset = autoOffset(index, self.MAXcoresPerRun)
                 result = self.startSubprocess(self.infoDict[item], offset)
-        except KeyError:
-            offset = autoOffset(index, self.MAXcoresPerRun)
-            result = self.startSubprocess(self.infoDict[item], offset)
-        #if isinstance(self.infoDict[item]['offset'], None):
-        #    offset = autoOffset(index, self.MAXcoresPerRun)
-        #    result = self.startSubprocess(self.infoDict[item], offset)
-        #elif isinstance(self.infoDict[item]['offset'], int):
-        #    offset = self.infoDict[item]['offset']
-        #    result = self.startSubprocess(self.infoDict[item], offset)
+            # custom offset
+            elif customoffsetflag == 1:
+                result = self.startSubprocess(self.infoDict[item], self.infoDict[item]['offset'])
+        # run is MPI
+        elif self.infoDict[item]['run_type'] == 'MPI':
+            # auto offset
+            if customoffsetflag == 0:
+                print(f'Inside run_type: MPI, auto offset')
+                offset = autoOffset(index, self.MAXcoresPerRun)
+                print(f'Index: {index}, maxcoresperrun: {self.MAXcoresPerRun}, Offset: {offset}')
+                result = self.startSubprocess(self.infoDict[item], offset)
+            # custom offset
+            elif customoffsetflag == 1:
+                result = self.startSubprocess(self.infoDict[item], self.infoDict[item]['offset'])
+
+        print(f'Result after: {result}')
+
         end = time.time()
         # if run success (result == 0) record time used to "runtime" key in dictionary
         # else record error code and time used
@@ -194,7 +222,7 @@ class RunHandler:
         
         return self.infoDict[item]
     
-    def startSubprocess(self, item, offset):
+    def startSubprocess(self, item, offset, domainCount=1):
         """
         This function write and run batch file for comparison model.
         
@@ -283,7 +311,7 @@ if __name__ == '__main__':
     MAXcoresPerRun = input("Maximum cores for each run: \n")
     runBatch = RunHandler(modelFolder, MAXcoresPerRun, efdc)
     customOffsetFlag = input("Custom offset? (0/1): ")
-    if customOffsetFlag == 0:
+    if int(customOffsetFlag) == 0:
         print("Auto offset\n")
         time.sleep(5)
         runBatch.run()
