@@ -116,7 +116,7 @@ class RunHandler:
         self.MAXcoresPerRun = int(MAXcoresPerRun)
         self.efdc = efdc
         self.mpi = mpiexec
-        self.vcoresFlag = vcoresFlag
+        self.vcoresFlag = int(vcoresFlag)
         self.infoDict = self.getModels()
         
         
