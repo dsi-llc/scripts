@@ -63,6 +63,40 @@ def hexpinlist(domainCount, coresPerDomain, offset):
     
     return pinlist
 
+def vCoreshexpinlist(domainCount, coresPerDomain, offset):
+    """
+    This function generates a list of hexidecimal numbers to pin
+    the exact cores to use on a computer for MPI runs.
+
+    inputs:
+        domainCount: int, domain number in the MPI run
+        coresPerDomain: int, cores to use in each domain
+        offset: int, cores to offset due to existing MPI runs
+    
+    outputs:
+        pinlist: list, list of a string with hexidecimal numbers 
+                 to pin each domain to a specific core
+    """
+    pinlist = []
+    # Assign cores usage for each domain
+    # fill cores from the front, towards the back
+    for i in range(domainCount):
+        # cores used are represent by '1'
+        # cores offset are represent by '0'
+        cores_used = '10' * coresPerDomain
+        cores_used = cores_used[:-1]
+
+        empty_cores = '0' * 2 * (offset + i * coresPerDomain)
+
+        pin = cores_used + empty_cores
+        # convert binary to hexidecimal, drop the first 2 char '0x'
+        # then append to list
+        pinlist.append(hex(int(pin, 2))[2:])
+    # formatting, join all str to one 
+    pinlist = ', '.join(pinlist)
+    
+    return pinlist
+
 def autoOffset(index, MAXcoresPerRun):
     offset = index * MAXcoresPerRun
 
@@ -77,11 +111,12 @@ def checkCustomOffset(dictionary):
 
 class RunHandler:
     
-    def __init__(self, folderpath, MAXcoresPerRun, efdc, mpiexec):
+    def __init__(self, folderpath, MAXcoresPerRun, efdc, mpiexec, vcoresFlag):
         self.folderpath = folderpath
         self.MAXcoresPerRun = int(MAXcoresPerRun)
         self.efdc = efdc
         self.mpi = mpiexec
+        self.vcoresFlag = vcoresFlag
         self.infoDict = self.getModels()
         
         
@@ -279,7 +314,10 @@ class RunHandler:
         f = open(batpath, "w")
         if(domainCount > 1):
             coresPerDomain = self.MAXcoresPerRun // domainCount
-            corehexList = hexpinlist(domainCount, int(coresPerDomain), offset)
+            if self.vcoresFlag == 1:
+                corehexList = vCoreshexpinlist(domainCount, int(coresPerDomain), offset)
+            else:
+                corehexList = hexpinlist(domainCount, int(coresPerDomain), offset)
             try:
                 mpi_command = f'"{self.mpi}" -n {domainCount} -genv I_MPI_PIN_DOMAIN="[{corehexList}]" -genv OMP_NUM_THREADS={coresPerDomain}'
                 commands = [ f"TITLE={item['model_path']}\n", f"CD /d \"{item['model_path']}\"\n",
@@ -309,9 +347,13 @@ if __name__ == '__main__':
     efdc = input("Full path of the EFDC+ executable: \n")
 
     mpiexec = input("Full path of the mpiexec.exe: \n")
+
+    virtualCoresFlag = input("Computer have virtual cores? (0/1): ")
     
     MAXcoresPerRun = input("Maximum cores for each run: \n")
-    runBatch = RunHandler(modelFolder, MAXcoresPerRun, efdc, mpiexec)
+
+    runBatch = RunHandler(modelFolder, MAXcoresPerRun, efdc, mpiexec, virtualCoresFlag)
+    
     customOffsetFlag = input("Custom offset? (0/1): ")
     if int(customOffsetFlag) == 0:
         print("Auto offset\n")
