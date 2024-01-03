@@ -235,18 +235,12 @@ class RunHandler:
             # auto offset
             if customoffsetflag == 0:
                 print(f'Inside run_type: MPI, auto offset')
-                if self.vcoresFlag == 1:
-                    offset = autoOffset(index, self.MAXcoresPerRun * 2)
-                else:
-                    offset = autoOffset(index, self.MAXcoresPerRun)
+                offset = autoOffset(index, self.MAXcoresPerRun)
                 print(f'Index: {index}, maxcoresperrun: {self.MAXcoresPerRun}, Offset: {offset}')
                 result = self.startSubprocess(self.infoDict[item], offset)
             # custom offset
             elif customoffsetflag == 1:
-                if self.vcoresFlag == 1:
-                    result = self.startSubprocess(self.infoDict[item], self.infoDict[item]['offset'] * 2)
-                else: 
-                    result = self.startSubprocess(self.infoDict[item], self.infoDict[item]['offset'])
+                result = self.startSubprocess(self.infoDict[item], self.infoDict[item]['offset'])
 
         print(f'Result after: {result}')
 
