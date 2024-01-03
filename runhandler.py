@@ -235,12 +235,18 @@ class RunHandler:
             # auto offset
             if customoffsetflag == 0:
                 print(f'Inside run_type: MPI, auto offset')
-                offset = autoOffset(index, self.MAXcoresPerRun)
+                if self.vcoresFlag == 1:
+                    offset = autoOffset(index, self.MAXcoresPerRun * 2)
+                else:
+                    offset = autoOffset(index, self.MAXcoresPerRun)
                 print(f'Index: {index}, maxcoresperrun: {self.MAXcoresPerRun}, Offset: {offset}')
                 result = self.startSubprocess(self.infoDict[item], offset)
             # custom offset
             elif customoffsetflag == 1:
-                result = self.startSubprocess(self.infoDict[item], self.infoDict[item]['offset'])
+                if self.vcoresFlag == 1:
+                    result = self.startSubprocess(self.infoDict[item], self.infoDict[item]['offset'] * 2)
+                else: 
+                    result = self.startSubprocess(self.infoDict[item], self.infoDict[item]['offset'])
 
         print(f'Result after: {result}')
 
@@ -257,7 +263,7 @@ class RunHandler:
         
         return self.infoDict[item]
     
-    def startSubprocess(self, item, offset, domainCount=1):
+    def startSubprocess(self, item, offset):
         """
         This function write and run batch file for comparison model.
         
