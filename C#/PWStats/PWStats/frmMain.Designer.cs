@@ -314,7 +314,7 @@ namespace PWStats
             this.cbxOptions.Items.AddRange(new object[] {
             "MMSI",
             "Ship Name"});
-            this.cbxOptions.Location = new System.Drawing.Point(21, 62);
+            this.cbxOptions.Location = new System.Drawing.Point(15, 64);
             this.cbxOptions.Margin = new System.Windows.Forms.Padding(2);
             this.cbxOptions.Name = "cbxOptions";
             this.cbxOptions.Size = new System.Drawing.Size(76, 21);
@@ -326,36 +326,14 @@ namespace PWStats
             this.cbxShip.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbxShip.FormattingEnabled = true;
             this.cbxShip.Items.AddRange(new object[] {
+            "<All Ships>",
             "<All Ships>"});
-            this.cbxShip.Location = new System.Drawing.Point(101, 62);
+            this.cbxShip.Location = new System.Drawing.Point(101, 64);
             this.cbxShip.Margin = new System.Windows.Forms.Padding(2);
             this.cbxShip.Name = "cbxShip";
             this.cbxShip.Size = new System.Drawing.Size(151, 21);
             this.cbxShip.TabIndex = 17;
             this.cbxShip.SelectedIndexChanged += new System.EventHandler(this.cbxShip_SelectedIndexChanged);
-            // 
-            // cbxShip
-            // 
-            this.cbxShip.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbxShip.FormattingEnabled = true;
-            this.cbxShip.Items.AddRange(new object[] {
-            "<All Ships>"});
-            this.cbxShip.Location = new System.Drawing.Point(80, 66);
-            this.cbxShip.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.cbxShip.Name = "cbxShip";
-            this.cbxShip.Size = new System.Drawing.Size(151, 21);
-            this.cbxShip.TabIndex = 17;
-            this.cbxShip.SelectedIndexChanged += new System.EventHandler(this.cbxShip_SelectedIndexChanged);
-            // 
-            // label14
-            // 
-            //this.label14.AutoSize = true;
-            //this.label14.Location = new System.Drawing.Point(41, 68);
-            //this.label14.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            //this.label14.Name = "label14";
-            //this.label14.Size = new System.Drawing.Size(38, 13);
-            //this.label14.TabIndex = 1;
-            //this.label14.Text = "MMSI:";
             // 
             // cbxDir
             // 

@@ -282,13 +282,13 @@ namespace PWStats
                     #endregion
                     break;
                 case 1:
-                    CreateChart("MMSI", (sh) => sh.MMSI.Trim());
+                    CreateChart("MMSI", (sh) => sh?.MMSI?.Trim() ?? string.Empty);
                     break;
                 case 2:
-                    CreateChart("Vessel Name", (sh) => sh.Name.Trim());
+                    CreateChart("Vessel Name", (sh) => sh?.Name?.Trim() ?? string.Empty);
                     break;
                 case 3:
-                    CreateChart("Vessel Type", (sh) => sh.Type.Trim());
+                    CreateChart("Vessel Type", (sh) => sh?.Type?.Trim() ?? string.Empty);
                     break;
                 case 4:
                     ProcessBins(out numBins, out binData, idx, (sh) => sh.Length);
